@@ -1,0 +1,11 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# hidden files
+.*
+!/.gitignore
+
+# Dependency directory
+node_modules

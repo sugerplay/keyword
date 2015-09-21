@@ -1,0 +1,29 @@
+{
+  "name": "keyword-extractor",
+  "version": "0.0.1",
+  "description": "package that extract keyword from plain-text",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sugerplay/keyword.git"
+  },
+  "keywords": [
+    "keyword",
+    "extract",
+    "word"
+  ],
+  "author": "sugerplay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sugerplay/keyword/issues"
+  },
+  "homepage": "https://github.com/sugerplay/keyword",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "mocha": "^2.3.3",
+    "should": "^7.1.0"
+  }
+}
