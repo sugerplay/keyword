@@ -3,7 +3,6 @@ var _ = require('lodash');
 exports.extract = function (text, options) {
     
     var defopt = {
-        'language': 'ko'
     };
     
     options = _.extend(options, defopt);
