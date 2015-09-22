@@ -19,10 +19,11 @@ exports.extract = function (text, options) {
     var count = function (text, target) {
         return (text.match(new RegExp(target, "g")) || []).length;
     }
-
-    var result = [];
+    
+    var result = {};
     var src = text;
     src = src.replace(/['"′‘’“”(),\n]/g, ' ');
+    src = src.replace(/[·\n]/g, ' ');
     src = src.replace(/[ ]+/g, ' ');
     var elements = src.split(' ');
     var ret = {};
@@ -85,11 +86,8 @@ exports.extract = function (text, options) {
         if (e.length > 1)
             r[e] = count(src, e);
             
-        if (r[e] == 1)
-            delete r[e];
-        
         return r;
-    }, result);
+    }, {});
     
     return result;
 }
