@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/sugerplay/keyword",
   "dependencies": {
-    "lodash": "^3.10.1",
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
     "mocha": "^2.3.3",
     "should": "^7.1.0"
   }
