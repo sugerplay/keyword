@@ -19,6 +19,19 @@ module.exports = function () {
     return _.map(list, reverseString);
   }
   
+  function replace (src, dst) {
+    return function (text) {
+      var reg = new RegExp(src, "g")
+      return text.replace(reg, dst);
+    };
+  }
+  
+  function replaceToSpace (src) {
+    return function (text) {
+      return replace(src, ' ')(text).replace(/ +/g, ' ')
+    };
+  }
+  
   function checkAdv (el) {
     var selected = '';
     _.each(postPos, function (a, i) {
@@ -65,7 +78,8 @@ module.exports = function () {
       function (text) {
         return text.split(' ');
       },
-      require('./core/replace')(trash, ' ')
+      replaceToSpace('[' + trash + ']'),
+      replace('\\.', '. ')
     );
     
     return algorithm(text);
