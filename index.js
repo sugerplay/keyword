@@ -1,38 +1,28 @@
 var _ = require('lodash'),
-  tools = require('./tools.js'),
-  adv = require('./adv.json');
+  postPos = require('./postposition');
   
-// for tools
-var dispatch = tools.dispatch;
-
 module.exports = function () {
   // utils
-  String.prototype.endsWith = function(suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+  function endsWith (text, suffix) {
+    return text.indexOf(suffix, text.length - suffix.length) !== -1;
   };
-  
-  String.prototype.reverse = function () {
-    return this.split("").reverse().join("");
-  }
   
   var count = function (text, target) {
     return (text.match(new RegExp(target, "g")) || []).length;
   }
 
-  // function reverse = function () {
-  //   return this.split("").reverse().join("");
-  // }
+  function reverseString (str) {
+    return str.split('').reverse().join('');
+  }
   
   function reverseItems (list) {
-    return _.map(list, function (a, i) {
-      return a.reverse();
-    });
+    return _.map(list, reverseString);
   }
   
   function checkAdv (el) {
     var selected = '';
-    _.each(adv, function (a, i) {
-      if (el.endsWith(a) && selected === '') {
+    _.each(postPos, function (a, i) {
+      if (endsWith(el, a) && selected === '') {
         selected = a;
       }
     })
@@ -40,45 +30,44 @@ module.exports = function () {
   };
   
   // initializing
-  
-  adv = reverseItems(adv);
-  // desc sorting
-  adv.sort().reverse();
-  adv = reverseItems(adv);
+  postPos = reverseItems(postPos);
+  postPos.sort().reverse();
+  postPos = reverseItems(postPos);
   
   return function (text, options) {
     var defopt = {};
     
     options = _.extend(options, defopt);
+
+    var trash = '\'\"\′\‘\’\“\”\(\)\,\·\`\~\!\@\#\$\%\^\&\*\n\-';
+    var algorithm = _.compose(
+      function (elements) {
+        return _.reduce(elements, function (r, e) {
+          if (e.length > 1)
+            r[e] = count(text, e);
+              
+          return r;
+        }, {})
+      },
+      _.uniq,
+      function (elements) {
+        return _.map(elements, function (e, i) {
+          var a = checkAdv(e);
+          if (a !== '') {
+            return e.substr(0, e.length - a.length);
+          }
+          else if (e.substr(e.length-1, 1) === '.') {
+            return '';
+          }
+          return e;
+        });
+      },
+      function (text) {
+        return text.split(' ');
+      },
+      require('./core/replace')(trash, ' ')
+    );
     
-    var result = {};
-    var src = text;
-    src = src.replace(/['"′‘’“”(),\n]/g, ' ');
-    src = src.replace(/[·\n]/g, ' ');
-    src = src.replace(/[ ]+/g, ' ');
-    var elements = src.split(' ');
-    var ret = {};
-    
-    elements = _.map(elements, function (e, i) {
-      var a = checkAdv(e);
-      if (a !== '') {
-        return e.substr(0, e.length - a.length);
-      }
-      if (e.substr(e.length-1, 1) === '.') {
-        return '';
-      }
-      return e;
-    });
-    
-    elements = _.uniq(elements);
-    
-    result = _.reduce(elements, function (r, e) {
-      if (e.length > 1)
-        r[e] = count(src, e);
-          
-      return r;
-    }, {});
-    
-    return result;
+    return algorithm(text);
   }
 }

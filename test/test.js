@@ -1,6 +1,6 @@
 var should = require('should'),
     text = require("./texts.json"),
-    tools = require("../tools.js"),
+    tools = require("../core/tools.js"),
     keyword = require("../index.js");
     
 describe('Test for functional js', function() {
