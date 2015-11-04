@@ -1,6 +1,6 @@
 {
   "name": "keyword-extractor-korean",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "package that extract keyword from plain-text",
   "main": "index.js",
   "scripts": {
