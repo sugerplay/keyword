@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+  count = require('count-string'),
   postPos = require('./postposition');
   
 module.exports = function () {
@@ -7,10 +8,6 @@ module.exports = function () {
     return text.indexOf(suffix, text.length - suffix.length) !== -1;
   };
   
-  var count = function (text, target) {
-    return (text.match(new RegExp(target, "g")) || []).length;
-  }
-
   function reverseString (str) {
     return str.split('').reverse().join('');
   }
