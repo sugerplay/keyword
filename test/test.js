@@ -71,8 +71,8 @@ describe('Test for extracting text', function() {
   it('korean2', function () {
     var expectaion = {
         '개발': 1, '계획': 1, '국가': 3, '국가안전보장회의': 1,
-        '균형있': 1, '기타': 1, '받으': 1, '법률': 1, '보호': 1, '사항': 1, 
-        '위하': 1, '이용': 1, '자원': 1, '국토': 1, '조직': 1, '직무범위': 1, 
+        '균형': 1, '기타': 1, '받으': 1, '법률': 1, '보호': 1, '사항': 1, 
+        '수립': 1, '위하': 1, '이용': 1, '자원': 1, '국토': 1, '조직': 1, '직무범위': 1, 
         '필요한': 2
       },
       extract = keyword(),
@@ -87,6 +87,17 @@ describe('Test for extracting text', function() {
       },
       extract = keyword(),
       result = extract(text.test3);
+      
+    result.should.not.be.empty;
+    result.should.eql(expectaion);
+  });
+  
+  it('others', function () {
+    var expectaion = {
+        'blahblah': 2
+      },
+      extract = keyword(),
+      result = extract(text.text1);
       
     result.should.not.be.empty;
     result.should.eql(expectaion);

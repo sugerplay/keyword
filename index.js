@@ -1,6 +1,9 @@
 var _ = require('lodash'),
   count = require('count-string'),
-  postPos = require('./postposition');
+  postPos = require('./postposition'),
+  interjection = require('./reserved').interjection,
+  conjunction = require('./reserved').conjunction,
+  verb = require('./verb');
   
 module.exports = function () {
   // utils
@@ -25,13 +28,13 @@ module.exports = function () {
   
   function replaceToSpace (src) {
     return function (text) {
-      return replace(src, ' ')(text).replace(/ +/g, ' ')
+      return replace('[' + src + ']', ' ')(text).replace(/ +/g, ' ')
     };
   }
   
-  function checkAdv (el) {
+  function removePostfix (el, postfix) {
     var selected = '';
-    _.each(postPos, function (a, i) {
+    _.each(postfix, function (a, i) {
       if (endsWith(el, a) && selected === '') {
         selected = a;
       }
@@ -62,20 +65,44 @@ module.exports = function () {
       _.uniq,
       function (elements) {
         return _.map(elements, function (e, i) {
-          var a = checkAdv(e);
+          var a = removePostfix(e, postPos);
           if (a !== '') {
             return e.substr(0, e.length - a.length);
           }
-          else if (e.substr(e.length-1, 1) === '.') {
-            return '';
-          }
           return e;
+        });
+      },
+      function (elements) {
+        return _.map(elements, function (e, i) {
+          if (e.charAt(e.length-1) == '.') {
+            e = e.substr(0, e.length-1);
+            var verbRemoved = removePostfix(e, verb);
+            if (verbRemoved !== '') {
+              return e.substr(0, e.length - verbRemoved.length);
+            }
+            else {
+              return '';
+            }
+          }
+          else {
+            var verbRemoved = removePostfix(e, verb);
+            if (verbRemoved !== '') {
+              return e.substr(0, e.length - verbRemoved.length);
+            }
+            return e;
+          }
+        });
+      },
+      function (elements) {
+        return _.filter(elements, function (x) {
+          // remove reserved word
+          return !(interjection.indexOf(x) >= 0 || conjunction.indexOf(x) >= 0);
         });
       },
       function (text) {
         return text.split(' ');
       },
-      replaceToSpace('[' + trash + ']'),
+      replaceToSpace(trash),
       replace('\\.', '. ')
     );
     
